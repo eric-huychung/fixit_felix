@@ -1,10 +1,19 @@
 version: 2
+
+# Felix has a small dependency surface and one maintainer. Batch updates into a
+# few PRs rather than one per package, and hold back the majors that are known
+# to break the toolchain rather than opening a PR that can only fail.
 updates:
   - package-ecosystem: "uv"
     directory: "/"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+    groups:
+      python-runtime:
+        dependency-type: "production"
+      python-dev:
+        dependency-type: "development"
 
   - package-ecosystem: "npm"
     directory: "/web"
@@ -12,12 +21,33 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 5
     groups:
+      next:
+        patterns: ["next", "eslint-config-next", "@next/*"]
       react:
         patterns: ["react", "react-dom", "@types/react", "@types/react-dom"]
-      next:
-        patterns: ["next", "eslint-config-next"]
+      web-tooling:
+        patterns: ["*"]
+        exclude-patterns:
+          - "next"
+          - "eslint-config-next"
+          - "@next/*"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+    ignore:
+      # eslint-config-next tracks the ESLint 9 line; a major bump breaks lint
+      # until Next ships support. Take it deliberately, with the next group.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      # A TypeScript major is a migration, not a dependency bump.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      actions:
+        patterns: ["*"]
