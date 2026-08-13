@@ -1,0 +1,105 @@
+{
+  "size": 8,
+  "totalSize": 8,
+  "done": true,
+  "queryLocator": null,
+  "entityTypeName": "ValidationRule",
+  "records": [
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xzs9AAA"
+      },
+      "Id": "03dfj000003xzs9AAA",
+      "ValidationName": "Amount_Requires_Sponsor",
+      "Active": true,
+      "ErrorMessage": "Please contact your administrator.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xztlAAA"
+      },
+      "Id": "03dfj000003xztlAAA",
+      "ValidationName": "ClosedWon_Future_CloseDate",
+      "Active": true,
+      "ErrorMessage": "Please contact your administrator.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xzvNAAQ"
+      },
+      "Id": "03dfj000003xzvNAAQ",
+      "ValidationName": "LateStage_Needs_Description",
+      "Active": true,
+      "ErrorMessage": "Please contact your administrator.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y09tAAA"
+      },
+      "Id": "03dfj000003y09tAAA",
+      "ValidationName": "Huge_Deal_Needs_Review",
+      "Active": true,
+      "ErrorMessage": "Deals over 500k need VP review.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0GLAAY"
+      },
+      "Id": "03dfj000003y0GLAAY",
+      "ValidationName": "Discount_Needs_Approval",
+      "Active": true,
+      "ErrorMessage": "Discount over 30% requires approval.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0HxAAI"
+      },
+      "Id": "03dfj000003y0HxAAI",
+      "ValidationName": "ClosedWon_Needs_Amount",
+      "Active": true,
+      "ErrorMessage": "Closed Won requires Amount.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0JZAAY"
+      },
+      "Id": "03dfj000003y0JZAAY",
+      "ValidationName": "Deal_Code_Format",
+      "Active": true,
+      "ErrorMessage": "Deal Code must look like ABC-1234.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    },
+    {
+      "attributes": {
+        "type": "ValidationRule",
+        "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0Q1AAI"
+      },
+      "Id": "03dfj000003y0Q1AAI",
+      "ValidationName": "CloseDate_Too_Old",
+      "Active": true,
+      "ErrorMessage": "Close date cannot be more than a year in the past.",
+      "ErrorDisplayField": "Top of Page",
+      "NamespacePrefix": null
+    }
+  ]
+}

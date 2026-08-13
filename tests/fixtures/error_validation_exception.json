@@ -1,0 +1,7 @@
+[
+  {
+    "message": "Please contact your administrator.",
+    "errorCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION",
+    "fields": ["Amount"]
+  }
+]

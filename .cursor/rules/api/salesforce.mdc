@@ -1,0 +1,48 @@
+---
+description: Salesforce REST and Tooling API gotchas that will silently break the scanner
+globs: felix/salesforce/**/*.py
+alwaysApply: false
+---
+
+# Salesforce API Notes
+
+## `ValidationRule.Metadata` is one record at a time
+
+The `Metadata` field holds `errorConditionFormula`, but Salesforce refuses to return it
+for multi-record queries. Query ids first, then retrieve each rule individually.
+
+```python
+# BAD — errors when the object has more than one rule
+"SELECT Id, ValidationName, Metadata FROM ValidationRule"
+
+# GOOD — two passes
+ids = tooling_query(
+    "SELECT Id, ValidationName, Active, ErrorMessage, ErrorDisplayField "
+    "FROM ValidationRule WHERE EntityDefinition.QualifiedApiName = 'Opportunity'"
+)
+for rule in ids:
+    detail = tooling_get(f"sobjects/ValidationRule/{rule['Id']}")  # has Metadata
+```
+
+## Endpoints
+
+- Tooling query: `/services/data/v{VERSION}/tooling/query/?q={soql}`
+- Describe: `/services/data/v{VERSION}/sobjects/{object}/describe`
+- Pin `VERSION` in config. Do not let it float.
+
+## Read-only means read-only
+
+Only `GET` against the org, plus the `POST` to the token endpoint.
+`ValidationRule` supports `create()`/`update()` — never call them.
+
+## Other gotchas
+
+- Managed-package components carry a `NamespacePrefix`. Include it when reporting the
+  rule so packaged rules are distinguishable from org-local ones.
+- Inactive rules (`Active = false`) must be extracted but clearly marked. They do not
+  fire, so they must not appear in the eval set.
+- Developer Edition orgs allow ~15,000 API calls per day. Cache every describe and rule
+  fetch to sqlite, keyed by org id, so re-running `scan` costs nothing.
+- A field marked `nillable = false` in describe is required at the schema level.
+  Business-required fields enforced by a validation rule will *not* show up this way —
+  that gap is exactly the product.

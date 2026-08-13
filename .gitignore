@@ -1,0 +1,99 @@
+# Secrets & local env
+.env
+.env.*
+!.env.example
+*.pem
+credentials.json
+token.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+wheels/
+*.egg-info/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+uv-cache/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+coverage.xml
+*.cover
+
+# Type checkers / linters
+.pytype/
+.pyre/
+
+# Felix runtime artifacts
+.felix/
+*.sqlite
+*.sqlite3
+*.db
+
+# Personal working notes: build checklist and concept log. Kept on disk, not
+# published — they record how the project got here, not how to use it.
+docs/internal/
+
+# Scan / eval outputs (regenerated locally)
+output/
+outputs/
+constraints.md
+agent_context.md
+evals.jsonl
+eval_results/
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.idea/
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Node / Next.js UI
+web/node_modules/
+web/.next/
+web/out/
+web/*.tsbuildinfo
+web/next-env.d.ts
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Logs / temp
+*.log
+tmp/
+temp/
+.cache/

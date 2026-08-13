@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0Q1AAI"
+  },
+  "Id": "03dfj000003y0Q1AAI",
+  "ValidationName": "CloseDate_Too_Old",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:09:16.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:09:16.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "CloseDate < TODAY() - 365",
+    "errorDisplayField": null,
+    "errorMessage": "Close date cannot be more than a year in the past.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.CloseDate_Too_Old",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Close date cannot be more than a year in the past."
+}

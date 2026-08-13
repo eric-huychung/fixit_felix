@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xztlAAA"
+  },
+  "Id": "03dfj000003xztlAAA",
+  "ValidationName": "ClosedWon_Future_CloseDate",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:06:57.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:06:57.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(ISPICKVAL(StageName,\"Closed Won\"), CloseDate > TODAY())",
+    "errorDisplayField": null,
+    "errorMessage": "Please contact your administrator.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.ClosedWon_Future_CloseDate",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Please contact your administrator."
+}

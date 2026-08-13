@@ -1,0 +1,50 @@
+---
+description: Eight production design principles for generating or refactoring Python
+globs: **/*.py
+alwaysApply: true
+---
+
+# Production Principles
+
+When generating or refactoring Python, follow these. Prefer the simplest design that
+meets the task — do not over-engineer for speculative needs (YAGNI). Align with Felix
+scope in `specification/product.mdc`.
+
+## 1. Single responsibility & cohesion
+
+One reason to change per function/class. Do not mix validate + persist + notify in one unit.
+
+## 2. Encapsulation & abstraction
+
+Hide internals (`_private`). Expose a small public surface. Prefer methods/actions over
+reaching into another object's private state. Avoid Java-style getter/setter boilerplate
+when a clear attribute or method is enough.
+
+## 3. Loose coupling & modularity
+
+Depend on interfaces (`typing.Protocol`), not concrete classes hardcoded inside callers.
+Inject collaborators so implementations can be swapped in tests.
+
+## 4. Open for extension
+
+Prefer adding a new small type/module over growing a monolithic `elif` chain — when
+extension is a real requirement, not speculative.
+
+## 5. Portability
+
+No hardcoded secrets or machine-specific paths. Env for credentials; `pathlib.Path` for files.
+
+## 6. Defensive programming
+
+Validate inputs at boundaries. Use type hints. Prefer immutable results
+(`frozen` dataclasses / Pydantic models) for data crossing layers.
+
+## 7. Testability
+
+Break complex work into small pieces. Keep side effects at the edges so pure logic
+is easy to unit test.
+
+## 8. Simplicity (KISS, DRY, YAGNI)
+
+Reuse recurring logic. Do not add features, layers, or abstractions that were not asked for.
+Write the most straightforward code that satisfies the acceptance criteria.

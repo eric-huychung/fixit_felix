@@ -1,0 +1,18 @@
+---
+description: Fixture-based tests, no network in unit tests, live marker rules
+globs: "**/{tests,felix}/**/*.py"
+alwaysApply: false
+---
+
+# Testing
+
+## No network in unit tests
+
+Every Salesforce interaction is tested against recorded fixtures in `tests/fixtures/`.
+Use `respx` to mock `httpx`. Live-org tests are marked `@pytest.mark.live` and skipped
+by default.
+
+## Design for testability
+
+Separate pure logic from side effects (HTTP, disk, LLM). Prefer small units that do
+not need massive mocks. Keep fixtures realistic and shared across related tests.

@@ -1,0 +1,38 @@
+name: Feature request
+description: Suggest a change to what Felix does
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Felix is measured by a pass-rate delta, not a feature count. Proposals that move or
+        clarify that number get priority. Please check the non-goals in
+        [docs/product/PRD.md](../blob/main/docs/product/PRD.md) §4 first.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What breaks or is hard today? Describe the situation, not the solution.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you'd like instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: measurement
+    attributes:
+      label: How would we know it worked?
+      description: >
+        Ideally an effect on the eval pass rate, the honesty of that number, or the time it
+        takes an engineer to find a constraint.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

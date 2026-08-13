@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0JZAAY"
+  },
+  "Id": "03dfj000003y0JZAAY",
+  "ValidationName": "Deal_Code_Format",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:08:57.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:08:57.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(NOT(ISBLANK(Deal_Code__c)), NOT(REGEX(Deal_Code__c,\"^[A-Z]{3}-[0-9]{4}$\")))",
+    "errorDisplayField": null,
+    "errorMessage": "Deal Code must look like ABC-1234.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.Deal_Code_Format",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Deal Code must look like ABC-1234."
+}

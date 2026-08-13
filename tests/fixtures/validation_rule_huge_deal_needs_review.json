@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y09tAAA"
+  },
+  "Id": "03dfj000003y09tAAA",
+  "ValidationName": "Huge_Deal_Needs_Review",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:07:46.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:07:46.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "Amount > 500000",
+    "errorDisplayField": null,
+    "errorMessage": "Deals over 500k need VP review.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.Huge_Deal_Needs_Review",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Deals over 500k need VP review."
+}

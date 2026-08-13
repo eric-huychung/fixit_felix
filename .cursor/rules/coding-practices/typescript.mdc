@@ -1,0 +1,58 @@
+---
+description: TypeScript/React coding practices and style for Felix (web UI)
+globs: web/**/*.{ts,tsx},**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Coding Style (TypeScript)
+
+Applies to the Phase 9 thin UI under `web/` (and any other `.ts`/`.tsx`).
+
+- Prefer **modular, reusable components** and **small, focused functions**—one clear responsibility per unit.
+- Follow Next.js / React ecosystem best practices; keep code **clean, short, and simple**.
+- Avoid over-engineering: no premature abstractions, helpers used once, or extra layers without clear payoff.
+- Match existing patterns in the repo (naming, folder layout, imports) before introducing new conventions.
+
+## Naming conventions
+
+- Default: **snake_case** for files, folders, variables, functions, types, and props (e.g. `parse_error`, `scan_panel.tsx`).
+- **Exceptions:** React components **PascalCase** (`ScanPanel` in `scan_panel.tsx`); env vars **SCREAMING_SNAKE_CASE** (`NEXT_PUBLIC_FELIX_API_URL`).
+- No `camelCase` in new code unless an external API requires it (e.g. Next.js config keys, Salesforce JSON fields).
+
+## Comments
+
+Use **JSDoc** (`/** ... */`)—the TypeScript/JavaScript standard—not plain block comments.
+
+### File header (top of every file)
+
+Add a short file-level docblock: what the file is for and its role in the app.
+
+```typescript
+/**
+ * Local Felix API client used by Scan and Diagnose views.
+ */
+```
+
+### Functions
+
+Document **exported** functions and any non-trivial helpers. Keep it short: what it does, what it returns, and each parameter.
+
+```typescript
+/**
+ * Fetches an artifact from the loopback Felix API.
+ *
+ * @param name - Artifact basename (e.g. constraints.md)
+ * @returns Artifact text body
+ */
+export async function fetch_artifact(name: string): Promise<string> {
+```
+
+- Use `@param name - description` for each parameter (types come from TypeScript; add type in the description only when it clarifies intent).
+- Use `@returns description` when the return value is not obvious.
+- For React components, use `@param props` or document meaningful props individually if the API is public/reusable.
+
+### When to skip or stay minimal
+
+- Do not comment obvious one-liners or self-explanatory private helpers.
+- Prefer clear names over comments; use inline comments only for non-obvious business rules or tricky logic.
+- No commented-out code—delete it (git has history).

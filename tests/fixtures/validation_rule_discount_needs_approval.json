@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0GLAAY"
+  },
+  "Id": "03dfj000003y0GLAAY",
+  "ValidationName": "Discount_Needs_Approval",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:08:14.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:08:14.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(Discount_Percent__c > 0.30, TEXT(Approval_Status__c) <> \"Approved\")",
+    "errorDisplayField": null,
+    "errorMessage": "Discount over 30% requires approval.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.Discount_Needs_Approval",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Discount over 30% requires approval."
+}

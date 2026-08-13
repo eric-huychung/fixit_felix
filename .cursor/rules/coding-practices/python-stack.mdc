@@ -1,0 +1,41 @@
+---
+description: Felix Python stack — uv, Pydantic, httpx, typer, and LLM placement
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python Stack
+
+Python 3.11+, managed with `uv`. Pydantic v2 for all data crossing a boundary.
+`httpx` for HTTP, `typer` for the CLI, `pytest` + `respx` for tests.
+
+## Typed models, not dicts
+
+```python
+# BAD — untyped dict passed between layers
+def get_rules(obj: str) -> list[dict]: ...
+
+# GOOD
+def get_rules(obj: str) -> list[ValidationRuleConstraint]: ...
+```
+
+## Fail loudly on partial extraction
+
+A scan that silently skips an object produces a report the engineer will trust and
+should not. Collect errors and surface them in the output.
+
+```python
+result = ScanResult(constraints=found, errors=failures)
+if result.errors:
+    console.print(f"[yellow]{len(result.errors)} objects could not be scanned[/]")
+```
+
+## Keep the LLM out of the hot path
+
+Formula translation is the only LLM call. Cache by rule id + formula hash.
+Never run translation during `diagnose` if a cached translation exists.
+
+## Config and secrets
+
+Never hardcode credentials, API keys, or absolute machine paths.
+Use env / settings for secrets; prefer `pathlib.Path` for filesystem paths.

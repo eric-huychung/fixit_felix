@@ -1,0 +1,52 @@
+name: Bug report
+description: Something behaves differently than documented
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For anything security-related, please
+        [report it privately](https://github.com/eric-huychung/fixit_felix/security/advisories/new)
+        instead of filing a public issue.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, what you expected, and what you got instead.
+      placeholder: |
+        I ran `felix scan --object Opportunity` and ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: >
+        If you can reproduce it against the recorded fixtures
+        (`felix scan --fixtures tests/fixtures`), say so — that makes it far easier to fix.
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: Error message or traceback. **Redact org URLs, tokens, and record data.**
+      render: shell
+
+  - type: input
+    id: version
+    attributes:
+      label: Felix version / commit
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: OS and Python version
+      placeholder: macOS 15, Python 3.11.9
+    validations:
+      required: true

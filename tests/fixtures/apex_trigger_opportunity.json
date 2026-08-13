@@ -1,0 +1,16 @@
+{
+  "totalSize": 1,
+  "done": true,
+  "records": [
+    {
+      "attributes": {
+        "type": "ApexTrigger",
+        "url": "/services/data/v59.0/tooling/sobjects/ApexTrigger/01q000000000001AAA"
+      },
+      "Id": "01q000000000001AAA",
+      "Name": "OpportunityDiscountGuard",
+      "TableEnumOrId": "Opportunity",
+      "Body": "trigger OpportunityDiscountGuard on Opportunity (before insert, before update) {\n    for (Opportunity opp : Trigger.new) {\n        if (opp.Discount__c != null && opp.Discount__c > 0.5) {\n            opp.addError('Discount exceeds hard policy limit of 50%.');\n        }\n        if (opp.Amount != null && opp.Amount < 0) {\n            String msg = 'Amount must be positive: ' + opp.Amount;\n            opp.addError(msg);\n        }\n    }\n}\n"
+    }
+  ]
+}

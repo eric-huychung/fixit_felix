@@ -1,0 +1,30 @@
+---
+description: What Felix is, MVP scope, and safety invariants that must never be broken
+alwaysApply: true
+---
+
+# Felix
+
+Local, read-only CLI. Points at a Salesforce org and reports constraints that will break
+an AI agent **before** deploy. Tool for the engineer — not an autonomous healer.
+
+Commands: `felix scan` · `felix eval` · `felix diagnose`
+
+Details live in `docs/product/PRD.md` and `docs/architecture/SYSTEM_DESIGN.md`. Prefer those over inventing scope.
+
+## Safety invariants — never violate
+
+1. **Never write to Salesforce.** Read-only API only (plus the auth handshake).
+2. **Never invent field values.** Report constraints; the agent decides payloads.
+3. **Record data never reaches the LLM.** Formula text, field names, error messages only.
+4. **Credentials never leave the machine.** No hosted backend, no telemetry in the MVP.
+5. **Retries cap at 2**, and the error signature must change between attempts.
+
+## MVP scope
+
+- Salesforce only · write-path failures only · start with `Opportunity`
+- Out of scope: JSON/syntax repair, read-path schema drift, other CRMs, hosted backend, dashboards
+
+## Success
+
+A measured pass-rate delta on real validation rules — not a feature set. Protect the eval.

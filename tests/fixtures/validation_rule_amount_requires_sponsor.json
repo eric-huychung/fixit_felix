@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xzs9AAA"
+  },
+  "Id": "03dfj000003xzs9AAA",
+  "ValidationName": "Amount_Requires_Sponsor",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:06:30.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:06:30.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(Amount > 100000, ISBLANK(Executive_Sponsor__c))",
+    "errorDisplayField": null,
+    "errorMessage": "Please contact your administrator.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.Amount_Requires_Sponsor",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Please contact your administrator."
+}

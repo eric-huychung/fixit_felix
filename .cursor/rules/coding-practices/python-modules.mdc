@@ -1,0 +1,52 @@
+---
+description: Module size, Protocols, and Google-style docstrings for Felix Python
+globs: **/*.py
+alwaysApply: false
+---
+
+# Python Modules & Style
+
+## Small, focused modules
+
+Short, single-purpose functions and classes. A module over ~500 lines or a function
+over ~30 lines probably needs splitting. Prefer an orchestrator that calls helpers
+over a god function.
+
+```python
+# GOOD — orchestrator calling focused helpers
+def scan_org(object_name: str) -> ScanResult:
+    fields = extract_fields(object_name)
+    rules = extract_rules(object_name)
+    apex = extract_apex(object_name)
+    return ScanResult(fields=fields, rules=rules, apex=apex)
+```
+
+## Prefer Protocols over ABCs
+
+Use `typing.Protocol` for swappable dependencies. Lighter and more Pythonic than
+forcing inheritance from `abc.ABC`. Concrete types match the shape; they need not inherit.
+
+```python
+class LLMProvider(Protocol):
+    def complete(self, system: str, user: str) -> str: ...
+```
+
+## Docstrings — Google style, short
+
+One-line summary; add Args/Returns only when they clarify.
+
+```python
+def extract_rules(
+    client: SalesforceClient,
+    object_name: str,
+) -> list[ValidationRuleConstraint]:
+    """Extract validation rules for the given object.
+
+    Args:
+        client: Authenticated Salesforce client.
+        object_name: API name of the Salesforce object.
+
+    Returns:
+        Validation rules found for the object.
+    """
+```

@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003y0HxAAI"
+  },
+  "Id": "03dfj000003y0HxAAI",
+  "ValidationName": "ClosedWon_Needs_Amount",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:08:36.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:08:36.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(ISPICKVAL(StageName,\"Closed Won\"), ISBLANK(Amount))",
+    "errorDisplayField": null,
+    "errorMessage": "Closed Won requires Amount.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.ClosedWon_Needs_Amount",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Closed Won requires Amount."
+}

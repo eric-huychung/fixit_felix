@@ -1,0 +1,28 @@
+{
+  "attributes": {
+    "type": "ValidationRule",
+    "url": "/services/data/v59.0/tooling/sobjects/ValidationRule/03dfj000003xzvNAAQ"
+  },
+  "Id": "03dfj000003xzvNAAQ",
+  "ValidationName": "LateStage_Needs_Description",
+  "Active": true,
+  "Description": null,
+  "NamespacePrefix": null,
+  "ManageableState": "unmanaged",
+  "CreatedById": "005fj00000LBhOvAAL",
+  "CreatedDate": "2026-08-13T02:07:22.000+0000",
+  "LastModifiedById": "005fj00000LBhOvAAL",
+  "LastModifiedDate": "2026-08-13T02:07:22.000+0000",
+  "Metadata": {
+    "description": null,
+    "errorConditionFormula": "AND(OR(ISPICKVAL(StageName,\"Proposal\"), ISPICKVAL(StageName,\"Negotiation\")), ISBLANK(Description))",
+    "errorDisplayField": null,
+    "errorMessage": "Please contact your administrator.",
+    "shouldEvaluateOnClient": null,
+    "active": true
+  },
+  "FullName": "Opportunity.LateStage_Needs_Description",
+  "EntityDefinitionId": "Opportunity",
+  "ErrorDisplayField": "Top of Page",
+  "ErrorMessage": "Please contact your administrator."
+}

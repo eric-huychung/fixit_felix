@@ -1,0 +1,7 @@
+[
+  {
+    "message": "bad value for restricted picklist field: StageName",
+    "errorCode": "INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST",
+    "fields": ["StageName"]
+  }
+]
