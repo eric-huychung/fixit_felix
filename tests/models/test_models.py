@@ -131,3 +131,41 @@ def test_error_signature_from_dict() -> None:
     )
     assert sig.error_code == "FIELD_CUSTOM_VALIDATION_EXCEPTION"
     assert sig.field == "Amount"
+
+
+def test_challenge_case_defaults_to_proposed() -> None:
+    """FDE-facing challenge cases start untrusted until approved."""
+    from felix.models import ChallengeCase
+
+    case = ChallengeCase.model_validate(
+        {
+            "id": "challenge-03d000000000001AAA",
+            "object_name": "Opportunity",
+            "rule_id": "03d000000000001AAA",
+            "rule_name": "Amount_Requires_Sponsor",
+            "intent": "Create an Opportunity that violates Amount_Requires_Sponsor.",
+            "payload": {"Name": "Felix", "Amount": 250000},
+            "expected_error_fragment": "Please contact your administrator.",
+        }
+    )
+    assert case.status == "proposed"
+    assert case.payload["Amount"] == 250000
+
+
+def test_challenge_case_status_is_closed() -> None:
+    from felix.models import ChallengeCase
+    import pytest
+
+    with pytest.raises(Exception):
+        ChallengeCase.model_validate(
+            {
+                "id": "challenge-x",
+                "object_name": "Opportunity",
+                "rule_id": "x",
+                "rule_name": "R",
+                "intent": "x",
+                "payload": {},
+                "expected_error_fragment": "err",
+                "status": "seed",
+            }
+        )

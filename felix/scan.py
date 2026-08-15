@@ -17,6 +17,7 @@ from felix.models import (
 )
 from felix.salesforce.apex import extract_apex_constraints
 from felix.salesforce.describe import extract_fields
+from felix.salesforce.soql import sobject_name
 from felix.salesforce.validation_rules import extract_validation_rules
 from felix.translate import translate_rules
 
@@ -98,7 +99,9 @@ def _load_describe(
         if cached is not None:
             return json.loads(cached)
 
-    describe = client.rest_get(f"sobjects/{object_name}/describe")
+    # Validated here too, not just at the SOQL seam: this is the one place an
+    # object name is interpolated into a URL path.
+    describe = client.rest_get(f"sobjects/{sobject_name(object_name)}/describe")
     if cache is not None:
         cache.set(org_id, "describe", object_name, json.dumps(describe))
     return describe

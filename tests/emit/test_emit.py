@@ -1,6 +1,7 @@
 """Golden-file and unit tests for emit modules."""
 
 import json
+from datetime import date
 
 from felix.emit.context import estimate_tokens, render_agent_context
 from felix.emit.evalset import (
@@ -10,7 +11,10 @@ from felix.emit.evalset import (
     seed_for,
 )
 from felix.emit.report import render_constraints_report
+from felix.models import ValidationRuleConstraint
 from tests.helpers import FIXTURES, sample_scan_result
+
+_GOLDEN_TODAY = date(2026, 8, 15)
 
 
 def test_constraints_report_matches_golden() -> None:
@@ -20,12 +24,36 @@ def test_constraints_report_matches_golden() -> None:
 
 
 def test_agent_context_matches_golden_and_omits_inactive() -> None:
-    rendered = render_agent_context(sample_scan_result())
+    rendered = render_agent_context(sample_scan_result(), today=_GOLDEN_TODAY)
     expected = (FIXTURES / "golden_agent_context.md").read_text(encoding="utf-8")
     assert rendered == expected
     assert "Legacy_Inactive_Rule" not in rendered
     assert "inactive rule" not in rendered.lower()
     assert "approx_tokens:" in rendered
+
+
+def test_agent_context_marks_bare_amount_cap_unfixable() -> None:
+    result = sample_scan_result(include_inactive=False)
+    huge = ValidationRuleConstraint(
+        id="03d000000000099AAA",
+        object_name="Opportunity",
+        name="Huge_Deal_Needs_Review",
+        active=True,
+        namespace_prefix=None,
+        error_message="Deals over 500k need VP review.",
+        error_display_field=None,
+        formula="Amount > 500000",
+        formula_hash="hash_huge",
+        plain_english="Ensure the deal is reviewed by a VP.",
+        fields_referenced=["Amount"],
+    )
+    result = result.model_copy(update={"rules": [*result.rules, huge]})
+
+    rendered = render_agent_context(result, today=_GOLDEN_TODAY)
+
+    assert "UNFIXABLE by create-field edit" in rendered
+    assert "Ensure the deal is reviewed by a VP." not in rendered
+    assert "2025-08-15" in rendered  # concrete earliest CloseDate
 
 
 def test_evals_one_case_per_active_rule() -> None:

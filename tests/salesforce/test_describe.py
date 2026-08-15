@@ -23,3 +23,6 @@ def test_opportunity_fixture_field_count_and_required() -> None:
     assert by_name["AccountId"].reference_to == ["Account"]
     assert by_name["Name"].max_length == 120
     assert "Executive_Sponsor__c" in by_name
+    # Non-createable fields must not be "required on create" even if nillable=false
+    # (ForecastCategory is stage-derived and rejects create payloads that set it).
+    assert by_name["ForecastCategory"].required is False

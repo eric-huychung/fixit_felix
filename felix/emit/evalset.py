@@ -124,3 +124,15 @@ def _apply(payload: dict[str, Any], overrides: dict[str, Any]) -> dict[str, Any]
         else:
             payload[key] = value
     return payload
+
+
+def merge_create_payload(
+    overrides: dict[str, Any],
+    *,
+    name: str | None = None,
+) -> dict[str, Any]:
+    """Start from the Opportunity create base, then apply overrides (None = omit)."""
+    payload = dict(_BASE_PAYLOAD)
+    if name is not None:
+        payload["Name"] = name
+    return _apply(payload, overrides)

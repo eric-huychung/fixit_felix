@@ -13,7 +13,9 @@ def extract_fields(
 ) -> list[FieldConstraint]:
     """Convert a describe payload into field constraints.
 
-    Required means ``nillable`` is False and the field is not defaulted on create.
+    Required on create means ``nillable`` is False, the field is not defaulted on
+    create, and it is ``createable``. Non-createable fields (e.g. stage-derived
+    ``ForecastCategory``) are never required for agent payloads.
 
     Args:
         describe: Raw describe JSON from the REST API.
@@ -27,7 +29,11 @@ def extract_fields(
 
 
 def _to_constraint(object_name: str, field: dict[str, Any]) -> FieldConstraint:
-    required = field.get("nillable") is False and field.get("defaultedOnCreate") is not True
+    required = (
+        field.get("nillable") is False
+        and field.get("defaultedOnCreate") is not True
+        and field.get("createable") is True
+    )
     picklist = [
         entry["value"]
         for entry in field.get("picklistValues") or []

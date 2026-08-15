@@ -1,38 +1,31 @@
 /**
- * Sun/moon toggle that persists theme via next-themes (localStorage).
+ * Sun/moon toggle for light and dark mode.
  */
 
 "use client";
 
-import { useTheme } from "next-themes";
+import { MoonIcon, SunIcon } from "@/components/icons";
+import { toggle_theme } from "@/lib/theme";
 
 /**
  * Renders a light/dark toggle.
  *
- * `resolvedTheme` is undefined until next-themes has read localStorage on the
- * client, which doubles as the mount signal — rendering a placeholder until
- * then avoids a hydration mismatch without tracking mounted state ourselves.
+ * Both icons are always in the markup and the stylesheet reveals whichever one
+ * matches `html.dark`. That keeps this component's output independent of the
+ * current theme, so the server and the client render the same thing and there
+ * is nothing to mismatch during hydration — no mounted flag, no placeholder.
  */
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
-
-  if (resolvedTheme === undefined) {
-    return (
-      <button type="button" className="ghost" disabled tabIndex={-1} aria-hidden>
-        Theme
-      </button>
-    );
-  }
-
-  const is_dark = resolvedTheme === "dark";
   return (
     <button
       type="button"
-      className="ghost"
-      aria-label={is_dark ? "Switch to light mode" : "Switch to dark mode"}
-      onClick={() => setTheme(is_dark ? "light" : "dark")}
+      className="icon_button"
+      title="Toggle theme"
+      aria-label="Toggle light and dark mode"
+      onClick={() => toggle_theme()}
     >
-      {is_dark ? "Light" : "Dark"}
+      <MoonIcon className="when_light" />
+      <SunIcon className="when_dark" />
     </button>
   );
 }

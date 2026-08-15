@@ -15,7 +15,12 @@ Requires Python 3.11+.
 ## Quickstart
 
 ```bash
+<<<<<<< HEAD
 # pick your object
+=======
+# Live org
+uv run felix objects
+>>>>>>> c50acf9 (Add challenge workflow, multi-object scan, and live-only web UI.)
 uv run felix scan --object Opportunity
 
 ```

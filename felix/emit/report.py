@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from felix.models import ScanResult, ValidationRuleConstraint
+from felix.models import ScanResult, ValidationRuleConstraint, scanned_objects
 
 
 def render_constraints_report(result: ScanResult) -> str:
@@ -20,7 +20,7 @@ def render_constraints_report(result: ScanResult) -> str:
         "",
     ]
 
-    objects = _objects_in_result(result)
+    objects = scanned_objects(result)
     for object_name in objects:
         lines.append(f"## {object_name}")
         lines.append("")
@@ -118,10 +118,3 @@ def _rule_block(rule: ValidationRuleConstraint) -> list[str]:
         ]
     )
     return block
-
-
-def _objects_in_result(result: ScanResult) -> list[str]:
-    names = {f.object_name for f in result.fields}
-    names.update(r.object_name for r in result.rules)
-    names.update(a.object_name for a in result.apex if a.object_name)
-    return sorted(names)

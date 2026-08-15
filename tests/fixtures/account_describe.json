@@ -1,0 +1,73 @@
+{
+  "name": "Account",
+  "label": "Account",
+  "labelPlural": "Accounts",
+  "keyPrefix": "001",
+  "custom": false,
+  "createable": true,
+  "queryable": true,
+  "updateable": true,
+  "deletable": true,
+  "deprecatedAndHidden": false,
+  "customSetting": false,
+  "fields": [
+    {
+      "name": "Id",
+      "label": "Account ID",
+      "type": "id",
+      "soapType": "tns:ID",
+      "nillable": false,
+      "createable": false,
+      "updateable": false,
+      "defaultedOnCreate": true,
+      "custom": false,
+      "length": 18,
+      "picklistValues": [],
+      "referenceTo": [],
+      "restrictedPicklist": false
+    },
+    {
+      "name": "Name",
+      "label": "Account Name",
+      "type": "string",
+      "soapType": "xsd:string",
+      "nillable": false,
+      "createable": true,
+      "updateable": true,
+      "defaultedOnCreate": false,
+      "custom": false,
+      "length": 255,
+      "picklistValues": [],
+      "referenceTo": [],
+      "restrictedPicklist": false
+    },
+    {
+      "name": "Type",
+      "label": "Account Type",
+      "type": "picklist",
+      "soapType": "xsd:string",
+      "nillable": true,
+      "createable": true,
+      "updateable": true,
+      "defaultedOnCreate": false,
+      "custom": false,
+      "length": 255,
+      "picklistValues": [
+        {
+          "active": true,
+          "defaultValue": false,
+          "label": "Customer",
+          "value": "Customer"
+        },
+        {
+          "active": true,
+          "defaultValue": false,
+          "label": "Partner",
+          "value": "Partner"
+        }
+      ],
+      "referenceTo": [],
+      "restrictedPicklist": false
+    }
+  ]
+}

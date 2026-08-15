@@ -32,6 +32,8 @@ appropriate for a single-user local tool, and it means:
 - **Any process on your machine can call it** while it is running. Do not run it on a shared
   or multi-user host.
 - `POST /scan` with `use_fixtures: false` will authenticate to your org and consume API calls.
+- `POST /eval` creates and deletes Opportunity records in the configured org. Only use it when
+  you intend to run the measuring harness.
 - The CORS allowlist covers only the loopback UI origin, and the server refuses to bind to a
   non-loopback address. Neither is a substitute for the above.
 

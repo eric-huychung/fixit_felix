@@ -4,6 +4,7 @@
 
 import { Suspense } from "react";
 import { ArtifactsPanel } from "@/components/artifacts_panel";
+import { SkeletonLines } from "@/components/loading";
 
 /**
  * Tabbed artifact browser.
@@ -19,7 +20,7 @@ export default function ArtifactsPage() {
         Output from the last scan. Copy agent context into your agent loop when you
         need treatment-arm behavior.
       </p>
-      <Suspense fallback={<p className="status">Loading…</p>}>
+      <Suspense fallback={<SkeletonLines rows={6} />}>
         <ArtifactsPanel />
       </Suspense>
     </main>

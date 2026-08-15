@@ -7,19 +7,25 @@ by construction rather than by a check each caller has to remember.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import Any
 
 from felix.emit.context import render_agent_context
 from felix.emit.evalset import render_evals_jsonl
 from felix.emit.report import render_constraints_report
-from felix.models import ScanResult
+from felix.models import ChallengeCase, ScanResult
 
 CONSTRAINTS = "constraints.md"
 AGENT_CONTEXT = "agent_context.md"
 EVALS = "evals.jsonl"
 SCAN_RESULT = "scan_result.json"
+CHALLENGE_CASES = "challenge_cases.json"
+EVAL_REPORT = "eval_report.json"
 
+# Scan always writes these four. Challenge cases / eval reports are separate.
 ARTIFACT_NAMES = (CONSTRAINTS, AGENT_CONTEXT, EVALS, SCAN_RESULT)
+_ALLOWED_ARTIFACTS = frozenset((*ARTIFACT_NAMES, CHALLENGE_CASES, EVAL_REPORT))
 
 _RENDERERS = {
     CONSTRAINTS: render_constraints_report,
@@ -30,7 +36,7 @@ _RENDERERS = {
 
 
 class UnknownArtifact(ValueError):
-    """Raised when a name is not one of the four known artifacts."""
+    """Raised when a name is not one of the known artifacts."""
 
 
 class ArtifactNotFound(FileNotFoundError):
@@ -38,7 +44,7 @@ class ArtifactNotFound(FileNotFoundError):
 
 
 class ArtifactStore:
-    """Read/write access to the four scan artifacts under one root directory."""
+    """Read/write access to scan artifacts and challenge cases under one root."""
 
     def __init__(self, root: Path) -> None:
         self._root = Path(root)
@@ -52,18 +58,18 @@ class ArtifactStore:
         """Resolve an artifact name to a path inside the root.
 
         Args:
-            name: One of ``ARTIFACT_NAMES``.
+            name: One of ``ARTIFACT_NAMES``, ``CHALLENGE_CASES``, or ``EVAL_REPORT``.
 
         Raises:
             UnknownArtifact: If the name is not on the allowlist. Because the
                 allowlist holds bare basenames, no traversal sequence can match.
         """
-        if name not in ARTIFACT_NAMES:
+        if name not in _ALLOWED_ARTIFACTS:
             raise UnknownArtifact(f"Unknown artifact: {name!r}")
         return self._root / name
 
     def write(self, result: ScanResult) -> dict[str, Path]:
-        """Render and write all four artifacts; return paths by name."""
+        """Render and write the four scan artifacts; return paths by name."""
         self._root.mkdir(parents=True, exist_ok=True)
         written: dict[str, Path] = {}
         for name, render in _RENDERERS.items():
@@ -86,7 +92,8 @@ class ArtifactStore:
 
     def existing(self) -> list[str]:
         """Names of artifacts currently present on disk."""
-        return [name for name in ARTIFACT_NAMES if self.path(name).is_file()]
+        ordered = (*ARTIFACT_NAMES, CHALLENGE_CASES, EVAL_REPORT)
+        return [name for name in ordered if self.path(name).is_file()]
 
     def scan_result(self) -> ScanResult:
         """Parse ``scan_result.json`` from this root.
@@ -96,7 +103,44 @@ class ArtifactStore:
         """
         return ScanResult.model_validate_json(self.read(SCAN_RESULT))
 
+    def write_challenge_cases(self, cases: list[ChallengeCase]) -> Path:
+        """Persist challenge cases for FDE review. Does not change scan artifacts."""
+        self._root.mkdir(parents=True, exist_ok=True)
+        path = self.path(CHALLENGE_CASES)
+        payload = [case.model_dump(mode="json") for case in cases]
+        path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+        return path
+
+    def challenge_cases(self) -> list[ChallengeCase]:
+        """Load challenge cases from this root.
+
+        Raises:
+            ArtifactNotFound: If none have been proposed yet.
+        """
+        payload = json.loads(self.read(CHALLENGE_CASES))
+        if not isinstance(payload, list):
+            raise ValueError("challenge_cases.json must be a JSON array")
+        return [ChallengeCase.model_validate(item) for item in payload]
+
+    def write_eval_report(self, report: dict[str, Any]) -> Path:
+        """Persist the last full eval report (baseline / treatment / cases)."""
+        self._root.mkdir(parents=True, exist_ok=True)
+        path = self.path(EVAL_REPORT)
+        path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        return path
+
+    def eval_report(self) -> dict[str, Any]:
+        """Load the last eval report.
+
+        Raises:
+            ArtifactNotFound: If eval has not been run yet.
+        """
+        payload = json.loads(self.read(EVAL_REPORT))
+        if not isinstance(payload, dict):
+            raise ValueError("eval_report.json must be a JSON object")
+        return payload
+
 
 def write_scan_artifacts(result: ScanResult, output_dir: Path) -> dict[str, Path]:
-    """Write all four artifacts to ``output_dir``."""
+    """Write all four scan artifacts to ``output_dir``."""
     return ArtifactStore(output_dir).write(result)

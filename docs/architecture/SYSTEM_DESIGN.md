@@ -92,7 +92,7 @@ class FieldConstraint(BaseModel):
     api_name: str
     label: str
     soap_type: str
-    required: bool  # describe: nillable == False and not defaulted
+    required: bool  # createable and nillable == False and not defaultedOnCreate
     picklist_values: list[str] = []
     max_length: int | None = None
     reference_to: list[str] = []

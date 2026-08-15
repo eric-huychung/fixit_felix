@@ -43,6 +43,8 @@ Only `GET` against the org, plus the `POST` to the token endpoint.
   fire, so they must not appear in the eval set.
 - Developer Edition orgs allow ~15,000 API calls per day. Cache every describe and rule
   fetch to sqlite, keyed by org id, so re-running `scan` costs nothing.
-- A field marked `nillable = false` in describe is required at the schema level.
+- A field is required on create only when `nillable = false`, not `defaultedOnCreate`,
+  and `createable = true`. Non-createable fields (e.g. `ForecastCategory`) can be
+  non-nillable but must not appear in "Required on create" for agents.
   Business-required fields enforced by a validation rule will *not* show up this way —
   that gap is exactly the product.

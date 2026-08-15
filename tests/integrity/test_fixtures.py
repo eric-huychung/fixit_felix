@@ -6,6 +6,8 @@ from tests.helpers import FIXTURES, load_validation_rule_details
 
 CORE_FILES = [
     "opportunity_describe.json",
+    "account_describe.json",
+    "account_validation_rules_list.json",
     "validation_rules_list.json",
     "apex_trigger_opportunity.json",
     "error_required_field.json",

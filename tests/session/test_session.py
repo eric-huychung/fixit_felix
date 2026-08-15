@@ -70,6 +70,13 @@ def test_fixture_session_writes_to_the_requested_output_dir(tmp_path: Path) -> N
         assert (output / name).is_file(), name
 
 
+def test_fixture_session_lists_the_recorded_object(tmp_path: Path) -> None:
+    with open_scan_session(output_dir=tmp_path, fixtures_dir=FIXTURES) as session:
+        names = [obj.name for obj in session.objects()]
+
+    assert names == ["Account", "Opportunity"]
+
+
 def test_org_id_is_derived_from_the_my_domain_host() -> None:
     assert org_id_from_instance("https://acme.my.salesforce.com") == "acme.my.salesforce.com"
     assert org_id_from_instance("https://acme.my.salesforce.com/services") == (

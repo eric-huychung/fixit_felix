@@ -68,3 +68,42 @@ def test_a_secret_beside_the_output_dir_is_unreachable(tmp_path: Path) -> None:
 
     with pytest.raises(UnknownArtifact):
         store.read("../.env")
+
+
+def test_challenge_cases_round_trip(tmp_path: Path) -> None:
+    from felix.models import ChallengeCase
+
+    store = ArtifactStore(tmp_path)
+    cases = [
+        ChallengeCase(
+            id="challenge-1",
+            object_name="Opportunity",
+            rule_id="r1",
+            rule_name="Amount_Requires_Sponsor",
+            intent="trip Amount_Requires_Sponsor",
+            payload={"Amount": 250000},
+            expected_error_fragment="Please contact your administrator.",
+            status="proposed",
+        )
+    ]
+    path = store.write_challenge_cases(cases)
+    assert path.name == "challenge_cases.json"
+    assert "challenge_cases.json" in store.existing()
+
+    loaded = store.challenge_cases()
+    assert len(loaded) == 1
+    assert loaded[0].status == "proposed"
+    assert loaded[0].payload["Amount"] == 250000
+
+
+def test_challenge_cases_missing_raises(tmp_path: Path) -> None:
+    store = ArtifactStore(tmp_path)
+    with pytest.raises(ArtifactNotFound):
+        store.challenge_cases()
+
+
+def test_scan_write_does_not_invent_challenge_cases(tmp_path: Path) -> None:
+    """Challenge cases are proposed separately — a bare scan must not fabricate them."""
+    store = ArtifactStore(tmp_path)
+    store.write(sample_scan_result())
+    assert "challenge_cases.json" not in store.existing()

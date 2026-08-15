@@ -89,6 +89,75 @@ def test_reference_agent_retries_with_llm_revision() -> None:
     assert len(llm.calls) == 1
 
 
+@respx.mock
+def test_reference_agent_revision_ignores_null_fields() -> None:
+    """Nulls from the model must not wipe good prior values."""
+    instance = "https://example.my.salesforce.com"
+    create = respx.post(f"{instance}/services/data/v59.0/sobjects/Opportunity")
+    create.side_effect = [
+        httpx.Response(
+            400,
+            json=[{"message": "nope", "errorCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION"}],
+        ),
+        httpx.Response(201, json={"id": "006zz", "success": True}),
+    ]
+    respx.delete(f"{instance}/services/data/v59.0/sobjects/Opportunity/006zz").mock(
+        return_value=httpx.Response(204)
+    )
+
+    writer = OpportunityWriter(
+        instance_url=instance,
+        access_token="tok",
+        api_version="59.0",
+    )
+    llm = FakeProvider('{"Name": null, "Executive_Sponsor__c": "Ada"}')
+    agent = ReferenceAgent(writer, llm, agent_context="- set Executive_Sponsor__c")
+    result = agent.run(_case(), arm="treatment")
+
+    assert result.passed is True
+    assert result.attempts[1].payload.get("Name") == "Test"
+    assert result.attempts[1].payload.get("Executive_Sponsor__c") == "Ada"
+
+
+@respx.mock
+def test_reference_agent_hygiene_fixes_old_close_date() -> None:
+    """Even a weak LLM revision gets CloseDate corrected from the error text."""
+    instance = "https://example.my.salesforce.com"
+    create = respx.post(f"{instance}/services/data/v59.0/sobjects/Opportunity")
+    create.side_effect = [
+        httpx.Response(
+            400,
+            json=[
+                {
+                    "message": "Close date cannot be more than a year in the past.",
+                    "errorCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION",
+                }
+            ],
+        ),
+        httpx.Response(201, json={"id": "006aa", "success": True}),
+    ]
+    respx.delete(f"{instance}/services/data/v59.0/sobjects/Opportunity/006aa").mock(
+        return_value=httpx.Response(204)
+    )
+
+    writer = OpportunityWriter(
+        instance_url=instance,
+        access_token="tok",
+        api_version="59.0",
+    )
+    # Model "fixes" with another bad date — hygiene must override.
+    llm = FakeProvider('{"CloseDate": "2020-01-01"}')
+    agent = ReferenceAgent(writer, llm, agent_context=None)
+    case = _case()
+    case = case.model_copy(
+        update={"seed_payload": {**case.seed_payload, "CloseDate": "2020-01-01"}}
+    )
+    result = agent.run(case, arm="baseline")
+
+    assert result.passed is True
+    assert result.attempts[1].payload["CloseDate"] == "2026-06-15"
+
+
 def test_arm_metrics() -> None:
     from felix.evals.reference_agent import AttemptResult, CaseRunResult
 

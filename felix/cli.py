@@ -25,6 +25,39 @@ console = Console()
 
 
 @app.command()
+def objects(
+    fixtures: Path | None = typer.Option(
+        None,
+        "--fixtures",
+        help="Offline mode: directory of recorded Salesforce JSON fixtures",
+        exists=True,
+        file_okay=False,
+        dir_okay=True,
+    ),
+) -> None:
+    """List the org's scannable sObjects, to pick a target for felix scan."""
+    try:
+        with open_scan_session(fixtures_dir=fixtures) as session:
+            found = session.objects()
+    except ValueError as exc:
+        console.print(f"[red]{exc}[/]")
+        raise typer.Exit(code=1) from exc
+
+    if not found:
+        console.print("[yellow]No createable objects returned by the org.[/]")
+        return
+
+    table = Table(title=f"{len(found)} scannable objects")
+    table.add_column("API name")
+    table.add_column("Label")
+    table.add_column("Type")
+    for obj in found:
+        table.add_row(obj.name, obj.label, "custom" if obj.custom else "standard")
+    console.print(table)
+    console.print("\n[dim]felix scan --object <API name>[/]")
+
+
+@app.command()
 def scan(
     object_name: str = typer.Option("Opportunity", "--object", help="sObject API name"),
     fixtures: Path | None = typer.Option(
@@ -121,11 +154,29 @@ def eval(  # noqa: A001 — CLI command name matches product surface
     ),
 ) -> None:
     """Run a reference agent against the eval set; report pass-rate delta."""
+    from felix.challenge.eval_input import NoApprovedChallengeCases, eval_cases_from_store
     from felix.config import load_settings
+    from felix.emit.artifacts import ArtifactNotFound, ArtifactStore
     from felix.evals.runner import load_eval_cases, print_eval_report, run_eval
     from felix.evals.writer import OpportunityWriter
     from felix.llm import FakeProvider, build_provider
     from felix.salesforce.client import SalesforceClient
+
+    # Resolve the case set before auth — refuse proposed-only challenges early.
+    store = ArtifactStore(evals.parent)
+    try:
+        cases = eval_cases_from_store(store)
+    except NoApprovedChallengeCases as exc:
+        console.print(f"[red]{exc}[/]")
+        raise typer.Exit(code=1) from exc
+    except ArtifactNotFound:
+        cases = load_eval_cases(evals)
+
+    if limit is not None:
+        cases = cases[:limit]
+    if not cases:
+        console.print("[red]No eval cases found.[/]")
+        raise typer.Exit(code=1)
 
     settings = load_settings()
     if not settings.llm_api_key:
@@ -142,13 +193,6 @@ def eval(  # noqa: A001 — CLI command name matches product surface
             base_url=settings.llm_base_url,
         )
         console.print(f"LLM: {settings.llm_provider} / {settings.llm_model}")
-
-    cases = load_eval_cases(evals)
-    if limit is not None:
-        cases = cases[:limit]
-    if not cases:
-        console.print("[red]No eval cases found.[/]")
-        raise typer.Exit(code=1)
 
     console.print("[yellow]felix eval creates and deletes Opportunities in the target org.[/]")
     agent_context = context.read_text(encoding="utf-8")
@@ -169,6 +213,10 @@ def eval(  # noqa: A001 — CLI command name matches product surface
             writer.close()
 
     print_eval_report(report, console)
+    from felix.evals.report_json import report_to_dict
+
+    store.write_eval_report(report_to_dict(report, cases=cases))
+    console.print(f"Wrote {store.root / 'eval_report.json'}")
 
 
 @app.command()

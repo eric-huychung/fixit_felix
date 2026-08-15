@@ -17,6 +17,15 @@ def _scan(tmp_path: Path, *extra: str):
     )
 
 
+def test_felix_objects_lists_fixture_targets(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["objects", "--fixtures", str(FIXTURES)])
+
+    assert result.exit_code == 0, result.output
+    assert "Opportunity" in result.output
+    assert "felix scan --object" in result.output
+
+
 def test_felix_scan_fixtures_writes_artifacts(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     result = _scan(tmp_path)
@@ -75,3 +84,23 @@ def test_untranslated_rules_are_not_written_to_scan_result(tmp_path: Path, monke
     payload = json.loads((tmp_path / "output" / "scan_result.json").read_text())
 
     assert all(rule["plain_english"] is None for rule in payload["rules"])
+
+
+def test_felix_scan_account_fixtures(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(
+        app,
+        ["scan", "--object", "Account", "--fixtures", str(FIXTURES)],
+    )
+    assert result.exit_code == 0, result.output
+    out = tmp_path / "output"
+    assert (out / "constraints.md").exists()
+    assert "Account" in (out / "constraints.md").read_text()
+
+
+def test_felix_objects_lists_account_and_opportunity(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = runner.invoke(app, ["objects", "--fixtures", str(FIXTURES)])
+    assert result.exit_code == 0, result.output
+    assert "Opportunity" in result.output
+    assert "Account" in result.output

@@ -15,7 +15,8 @@ from typing import Any, Protocol
 from felix.cache import Cache
 from felix.emit.artifacts import ArtifactStore
 from felix.llm import LLMProvider
-from felix.models import ScanResult
+from felix.models import ScanResult, SObjectSummary
+from felix.salesforce.objects import list_objects
 from felix.scan import scan_org
 
 FIXTURE_ORG_ID = "fixture-org"
@@ -59,6 +60,10 @@ class ScanSession:
     @property
     def org_id(self) -> str:
         return self._org_id
+
+    def objects(self) -> list[SObjectSummary]:
+        """List the org's scannable sObjects, for a picker or a menu."""
+        return list_objects(self._client)
 
     def run(self, object_name: str) -> ScanResult:
         """Scan one object and write the artifacts.

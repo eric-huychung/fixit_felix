@@ -6,6 +6,14 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 
+class SObjectSummary(BaseModel):
+    """One sObject a caller may choose to scan, from the org's global describe."""
+
+    name: str
+    label: str
+    custom: bool
+
+
 class FieldConstraint(BaseModel):
     """Schema-level constraint for one Salesforce field."""
 
@@ -67,6 +75,26 @@ class EvalCase(BaseModel):
     seed_provenance: SeedProvenance = "derived"
 
 
+ChallengeStatus = Literal["proposed", "approved", "rejected"]
+
+
+class ChallengeCase(BaseModel):
+    """One FDE-facing challenge case: a create payload meant to trip a rule.
+
+    Status starts as ``proposed`` (LLM or derived draft). Only ``approved``
+    cases enter the quoted eval pass-rate.
+    """
+
+    id: str
+    object_name: str
+    rule_id: str
+    rule_name: str
+    intent: str
+    payload: dict[str, Any]
+    expected_error_fragment: str
+    status: ChallengeStatus = "proposed"
+
+
 class ScanError(BaseModel):
     """A non-fatal extraction failure surfaced in the scan report."""
 
@@ -84,6 +112,18 @@ class ScanResult(BaseModel):
     rules: list[ValidationRuleConstraint]
     apex: list[ApexConstraint]
     errors: list[ScanError]
+
+
+def scanned_objects(result: ScanResult) -> list[str]:
+    """API names present in a scan result, sorted.
+
+    A result is usually one object, but fields/rules/apex each carry their own
+    name, so callers that need "what did we scan?" go through here.
+    """
+    names = {field.object_name for field in result.fields}
+    names.update(rule.object_name for rule in result.rules)
+    names.update(item.object_name for item in result.apex if item.object_name)
+    return sorted(names)
 
 
 class ErrorSignature(BaseModel):
