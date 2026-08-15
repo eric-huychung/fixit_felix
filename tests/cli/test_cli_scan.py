@@ -61,8 +61,8 @@ def test_scan_summarizes_what_it_found(tmp_path: Path, monkeypatch) -> None:
 def test_offline_scan_does_not_fabricate_rule_meanings(tmp_path: Path, monkeypatch) -> None:
     """A stub translator would stamp one canned sentence onto all eight rules.
 
-    Untranslated rules must fall back to their own formula instead, so no rule
-    is described with another rule's meaning.
+    Context lines must stay unique. Formula-derived repair hints (not LLM prose)
+    should still name the sponsor field for the Amount rule.
     """
     monkeypatch.chdir(tmp_path)
     result = _scan(tmp_path)
@@ -72,7 +72,7 @@ def test_offline_scan_does_not_fabricate_rule_meanings(tmp_path: Path, monkeypat
     rule_lines = [line for line in context.splitlines() if line.startswith("- ")]
 
     assert len(rule_lines) == len(set(rule_lines)), "a meaning was reused across rules"
-    assert "ISBLANK(Executive_Sponsor__c)" in context
+    assert "Executive_Sponsor__c" in context
 
 
 def test_untranslated_rules_are_not_written_to_scan_result(tmp_path: Path, monkeypatch) -> None:

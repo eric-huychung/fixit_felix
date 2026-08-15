@@ -283,7 +283,10 @@ def test_propose_reports_deterministic_source_without_llm(tmp_path: Path) -> Non
 
 
 def test_propose_uses_injected_llm(tmp_path: Path) -> None:
-    scan = sample_scan_result()
+    """LLM fills gaps only for rules outside the org pack."""
+    scan = sample_scan_result(include_inactive=False)
+    unknown = [rule.model_copy(update={"name": f"Unknown_{rule.name}"}) for rule in scan.rules]
+    scan = scan.model_copy(update={"rules": unknown})
     (tmp_path / "scan_result.json").write_text(scan.model_dump_json(indent=2), encoding="utf-8")
     llm = FakeProvider(
         '{"Name": "FromLLM", "StageName": "Prospecting", "CloseDate": "2026-12-31", "Amount": 1}'
@@ -294,7 +297,7 @@ def test_propose_uses_injected_llm(tmp_path: Path) -> None:
     assert body["source"] == "llm"
     assert body["count"] >= 1
     assert all(case["payload"].get("Name") == "FromLLM" for case in body["cases"])
-    assert llm.calls  # one complete() per active rule
+    assert llm.calls  # one complete() per active unknown rule
 
 
 def test_eval_refuses_when_none_approved(tmp_path: Path) -> None:
