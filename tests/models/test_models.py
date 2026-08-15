@@ -2,8 +2,12 @@
 
 from datetime import UTC, datetime
 
+import pytest
+from pydantic import ValidationError
+
 from felix.models import (
     ApexConstraint,
+    ChallengeCase,
     ErrorSignature,
     EvalCase,
     FieldConstraint,
@@ -135,8 +139,6 @@ def test_error_signature_from_dict() -> None:
 
 def test_challenge_case_defaults_to_proposed() -> None:
     """FDE-facing challenge cases start untrusted until approved."""
-    from felix.models import ChallengeCase
-
     case = ChallengeCase.model_validate(
         {
             "id": "challenge-03d000000000001AAA",
@@ -153,10 +155,7 @@ def test_challenge_case_defaults_to_proposed() -> None:
 
 
 def test_challenge_case_status_is_closed() -> None:
-    from felix.models import ChallengeCase
-    import pytest
-
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         ChallengeCase.model_validate(
             {
                 "id": "challenge-x",

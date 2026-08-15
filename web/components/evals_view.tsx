@@ -33,19 +33,15 @@ export function EvalsView({
   legacy_content,
   live_report = null,
 }: props) {
-  const [report, set_report] = useState<eval_report | null>(live_report);
+  const [fetched_report, set_fetched_report] = useState<eval_report | null>(null);
   const [loaded, set_loaded] = useState<loaded_cases | null>(null);
   const [missing, set_missing] = useState(false);
   const [error, set_error] = useState<string | null>(null);
   const [loading, set_loading] = useState(true);
-
-  useEffect(() => {
-    if (live_report) set_report(live_report);
-  }, [live_report]);
+  const report = live_report ?? fetched_report;
 
   useEffect(() => {
     let current = true;
-    set_loading(true);
     Promise.all([
       fetch_latest_eval().catch(() => null),
       fetch_challenge_cases()
@@ -56,7 +52,7 @@ export function EvalsView({
         })),
     ]).then(([latest, challenges]) => {
       if (!current) return;
-      if (!live_report && latest) set_report(latest);
+      if (latest) set_fetched_report(latest);
       if (challenges.ok) {
         set_loaded({
           cases: challenges.listing.cases,
@@ -74,7 +70,7 @@ export function EvalsView({
     return () => {
       current = false;
     };
-  }, [live_report]);
+  }, []);
 
   if (active_rules === 0) {
     return <NoActiveRulesNotice object_name={object_name} />;
