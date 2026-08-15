@@ -30,6 +30,7 @@ def report_to_dict(
         "objects": objects,
     }
 
+
 def _arm_to_dict(arm: ArmMetrics) -> dict[str, Any]:
     aps = arm.attempts_per_success
     return {

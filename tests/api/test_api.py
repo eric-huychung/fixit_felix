@@ -175,6 +175,7 @@ def test_headline_from_results(tmp_path: Path) -> None:
     assert "+25" in (body["delta"] or "")
     assert body.get("source") == "published"
 
+
 def test_current_scan_reports_scanned_object(tmp_path: Path) -> None:
     scan = sample_scan_result()
     (tmp_path / "scan_result.json").write_text(scan.model_dump_json(indent=2), encoding="utf-8")
@@ -390,4 +391,3 @@ def test_approve_all_challenge_cases(tmp_path: Path) -> None:
     body = response.json()
     assert body["approved_count"] == body["count"]
     assert all(case["status"] == "approved" for case in body["cases"])
-

@@ -306,9 +306,7 @@ def create_app(
                 detail="No challenge cases yet. Propose them after a scan.",
             ) from exc
         updated = [
-            case.model_copy(update={"status": "approved"})
-            if case.status != "approved"
-            else case
+            case.model_copy(update={"status": "approved"}) if case.status != "approved" else case
             for case in cases
         ]
         store.write_challenge_cases(updated)
@@ -398,6 +396,7 @@ def _default_eval_runner(store: ArtifactStore) -> dict[str, Any]:
 
     report, cases = run_live_eval(store)
     return report_to_dict(report, cases=cases)
+
 
 def assert_loopback_host(host: str) -> None:
     """Refuse non-loopback binds so the API cannot be exposed on the LAN."""

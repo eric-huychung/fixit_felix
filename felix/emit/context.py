@@ -44,9 +44,7 @@ def render_agent_context(
         lines.append(f"## {object_name} — constraints")
         lines.append("")
         required = [
-            f.api_name
-            for f in result.fields
-            if f.object_name == object_name and f.required
+            f.api_name for f in result.fields if f.object_name == object_name and f.required
         ]
         if required:
             lines.append(f"- Required on create: {', '.join(required)}")
@@ -155,8 +153,7 @@ def _repair_hint_from_formula(rule: ValidationRuleConstraint, *, today: date) ->
         earliest = today - timedelta(days=365)
         prefer = today - timedelta(days=_PREFER_CLOSE_DATE_OFFSET_DAYS)
         return (
-            f"CloseDate must be on or after {earliest.isoformat()} "
-            f"(prefer {prefer.isoformat()})."
+            f"CloseDate must be on or after {earliest.isoformat()} (prefer {prefer.isoformat()})."
         )
 
     # Discount needs approval OR lower discount.

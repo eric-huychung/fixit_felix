@@ -39,9 +39,7 @@ def test_propose_prefers_org_pack_over_llm() -> None:
 
 def test_propose_uses_llm_for_unknown_rules() -> None:
     scan = sample_scan_result(include_inactive=False)
-    unknown = [
-        rule.model_copy(update={"name": f"Unknown_{rule.name}"}) for rule in scan.rules
-    ]
+    unknown = [rule.model_copy(update={"name": f"Unknown_{rule.name}"}) for rule in scan.rules]
     scan = scan.model_copy(update={"rules": unknown})
     llm = FakeLLM({"Amount": 999})
 
@@ -74,9 +72,7 @@ def test_propose_without_llm_uses_deterministic_drafts() -> None:
 def test_propose_falls_back_when_llm_returns_invalid_json() -> None:
     """Bad model output must not abort propose — seed draft, still proposed."""
     scan = sample_scan_result(include_inactive=False)
-    unknown = [
-        rule.model_copy(update={"name": f"Unknown_{rule.name}"}) for rule in scan.rules
-    ]
+    unknown = [rule.model_copy(update={"name": f"Unknown_{rule.name}"}) for rule in scan.rules]
     scan = scan.model_copy(update={"rules": unknown})
     llm = FakeLLM("not-json")
 
