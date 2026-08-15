@@ -3,9 +3,6 @@
 Local, read-only CLI that points at a Salesforce org and reports write-path constraints
 that will break an AI agent — **before** deploy.
 
-**Headline (2026-08-12):** treatment with `agent_context.md` lifted Opportunity pass rate
-**25% → 50% (+25 pp)** on an 8-rule seeded Developer Edition org. See [`docs/reference/RESULTS.md`](docs/reference/RESULTS.md).
-
 ## Install
 
 ```bash
@@ -18,11 +15,9 @@ Requires Python 3.11+.
 ## Quickstart
 
 ```bash
-# Live org
+# pick your object
 uv run felix scan --object Opportunity
 
-# Offline / CI against recorded fixtures
-uv run felix scan --object Opportunity --fixtures tests/fixtures
 ```
 
 Artifacts land in `output/`:
